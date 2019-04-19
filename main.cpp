@@ -51,6 +51,21 @@ int Hcalc(int des, int pos)
 	return ((10 * (abs(desX - posX))) + (10 * (abs(desY - posY))));
 }
 
+int find(int findee, vector<vector<int>> Closed)
+{
+	int ans = NULL;
+
+	for (int j = 0; j < static_cast<int>(Closed.size()); j++)
+	{
+		if (Closed.at(j).at(0) == findee)
+		{
+			ans = j;
+		}
+	}
+
+	return(ans);
+}
+
 int indexXPos(int indexX)
 {
 	return (indexX % 10);
@@ -90,72 +105,220 @@ int GetPos(int dir, int index)
 
 vector<vector<int>> CheckSurrounds(int Des, int IndexBest, vector<vector<int>>Open, vector<vector<int>>&Closed)
 {
-	int max = 10;
-	int tempi = 1;
 	int Pos = Open.at(IndexBest).at(0);
 
 	vector<int>temp{NULL, NULL, NULL};
 	temp.at(0) = Open.at(IndexBest).at(0);
-	temp.at(1) = Open.at(IndexBest).at(4); 
+	temp.at(1) = abs(10 - Open.at(IndexBest).at(4)); 
 	temp.at(2) = Open.at(IndexBest).at(3);
+
+	int tempBestPos1 = 0;
+	int tempBestF1 = temp.at(2);
+	int tempPos1 = 0;
+	int tempJval1 = temp.at(1);
+	int Jval1 = 0;
+
+	for (int j = 1; j < 10; j++)
+	{
+		bool SKIP = FALSE;
+		if (j == 5)
+		{
+			SKIP = TRUE;
+		}
+		if (GetPos(j, temp.at(0)) % 10 == 0)
+		{
+			if (j == 1 || j == 4 || j == 7)
+			{
+				SKIP = TRUE;
+			}
+		}
+		if (GetPos(j, temp.at(0)) % 10 == 9)
+		{
+			if (j == 3 || j == 6 || j == 9)
+			{
+				SKIP = TRUE;
+			}
+		}
+		if (GetPos(j, temp.at(0)) < 0)
+		{
+			SKIP = TRUE;
+		}
+		if (GetPos(j, temp.at(0)) > 99)
+		{
+			SKIP = TRUE;
+		}
+
+
+		if (SKIP == FALSE)
+		{
+			tempPos1 = GetPos(j, temp.at(0));
+			tempBestPos1 = tempPos1;
+			//int tempno1 = Closed.at(find(tempPos1, Closed)).at(2);
+			//int tempno2 = Hcalc(Des, Closed.at(find(tempPos1, Closed)).at(0));
+			//if (j == 2 || j == 4 || j == 6 || j == 8)
+			//{
+			//	Jval1 = 10 + (tempno1 - tempno2);
+			//}
+			//else
+			//{
+			//	Jval1 = 14 + (tempno1 - tempno2);
+			//}
+			for (int k = 0; k < static_cast<int>(Closed.size()); k++)
+			{
+				if (tempBestPos1 == Closed.at(k).at(0) && Closed.at(k).at(1) != 0)
+				{
+					if (tempBestF1 < ((Hcalc(Des, Closed.at(k).at(0))) + Jval1))
+					{
+						tempBestF1 = Hcalc(Des, Closed.at(k).at(0)) + Jval1;
+						tempBestPos1 = tempPos1;
+						tempJval1 = j;
+
+					}
+				}
+			}
+		}
+		
+
+	}
+	temp.at(1) = tempJval1;
+	temp.at(2) = tempBestF1;
+
+
 	Open.at(IndexBest) = Open.back();
 	Open.pop_back();
 
-	//for (int i = 0; i < static_cast<int>(Open.size()); i++)
-	//{
-	//	if (temp.at(0) == Open.at(i).at(0))
-	//	{
-	//		if (temp.at(2) > Open.at(i).at(3))
-	//		{
-	//			//swap
-	//			temp.at(1) = Open.at(i).at(4);
-	//			temp.at(2) = Open.at(i).at(3);
-	//		}
-	//	}
-	//}
-
 	Closed.push_back(temp);
 
+	bool NON0 = FALSE;
+	for (int i = 1; i < 10; i++)
+	{
+		if (i == 5)
+		{
+			i++;
+		}
+		if (Closed.back().at(1) == i)
+		{
+			NON0 = TRUE;
+		}
+	}
+	if (NON0 == FALSE)
+	{
+		Closed.pop_back();
+	}
 
 
 
-	for (int i = 1; i < max; i++)
+
+	for (int i = 1; i < 10; i++)
 	{
 
-
-
-		int g = 0;
-		if (tempi == 2 || tempi == 4 || tempi == 6 || tempi == 8)
+		if (i == 5)
 		{
-			g = 10;
+			i++;
+		}
+		int tempno1 = Closed.at(find(Pos, Closed)).at(2);
+		int tempno2 = Hcalc(Des, Closed.at(find(Pos, Closed)).at(0));
+		int g = 0;
+		if (i == 2 || i == 4 || i == 6 || i == 8)
+		{
+			g = 10 + (tempno1 - tempno2);
 		}
 		else
 		{
-			g = 14;
+			g = 14 + (tempno1 - tempno2);
 		}
 		
 
 
-		vector<int>temp{ GetPos(tempi, Pos), Hcalc(Des, GetPos(tempi, Pos)) , g , Hcalc(Des, GetPos(tempi, Pos)) + g, tempi };
+		vector<int>temp{ GetPos(i, Pos), Hcalc(Des, GetPos(i, Pos)) , g , Hcalc(Des, GetPos(i, Pos)) + g, i };
 
-	//	if ()  TODO keppeind better DIR
-		for (int i = 0; i < static_cast<int>(Closed.size()); i++)
-		{
-			if (temp.at(0) == Closed.at(i).at(0))
-			{
-				if (temp.at(3) > Closed.at(i).at(2))
-				{
-					temp.at(4) = Closed.at(i).at(1);
-					temp.at(3) = Closed.at(i).at(2);
-				}
-			}
+	////	if ()  TODO keppeind better DIR
+	//	for (int i = 0; i < static_cast<int>(Closed.size()); i++)
+	//	{
+	//		if (temp.at(0) == Closed.at(i).at(0))
+	//		{
+	//			//if (temp.at(3) > Closed.at(i).at(2))
+	//			//{
+	//			int tempBestPos = 0;
+	//			int tempBestF = 0;
+	//			int tempPos = 0;
+	//			int tempJval = 0;
+	//			int Jval = 0;
+	//			bool SKIP = FALSE;
+	//			//temp.at(4) = Closed.at(i).at(1);
+	//			//set direction to the direction if it came from the previous position with the highest h value
+	//			for (int j = 1; j < 10; j++)
+	//			{
+	//				SKIP = FALSE;
+	//				if (j == 5)
+	//				{
+	//					SKIP = TRUE;
+	//				}
+	//				if (GetPos(j, temp.at(0)) % 10 == 0)
+	//				{
+	//					if (j == 1 || j == 4 || j == 7)
+	//					{
+	//						SKIP = TRUE;
+	//					}
+	//				}
+	//				if (GetPos(j, temp.at(0)) % 10 == 9)
+	//				{
+	//					if (j == 3 || j == 6 || j == 9)
+	//					{
+	//						SKIP = TRUE;
+	//					}
+	//				}
+	//				if (GetPos(j, temp.at(0)) < 0)
+	//				{
+	//					SKIP = TRUE;
+	//				}
+	//				if (GetPos(j, temp.at(0)) > 99)
+	//				{
+	//					SKIP = TRUE;
+	//				}
 
-		}
+
+
+	//				tempPos = GetPos(j, temp.at(0));
+	//				tempBestPos = tempPos;
+	//				if (j == 2 || j == 4 || j == 6 || j == 8)
+	//				{
+	//					Jval = 10;
+	//				}
+	//				else
+	//				{
+	//					Jval = 14;
+	//				}
+
+	//				//if surrounding spot is on the closed list
+	//				for (int k = 0; k < static_cast<int>(Closed.size()); k++)
+	//				{
+	//					if (tempBestPos == Closed.at(k).at(0) && Closed.at(k).at(1) != 0 && SKIP != TRUE)
+	//					{
+	//						if (tempBestF < (Hcalc(Des, Closed.at(k).at(0))) + Jval)
+	//						{
+	//							tempBestF = Hcalc(Des, Closed.at(k).at(0)) + Jval;
+	//							tempBestPos = tempPos;
+	//							tempJval = j;
+
+	//						}
+	//					}
+	//				}
+
+	//			}
+	//			temp.at(4) = tempJval;
+	//			temp.at(3) = tempBestF;
+	//			temp.at(1) = tempBestF - tempJval;
+	//				//temp.at(3) = Closed.at(i).at(2);
+	//			//}
+	//		}
+
+	//	}
+
+
+
 
 		Open.push_back(temp);
-		//gotoxy(indexXPos(GetPos(tempi, Pos))+1, indexYPos(GetPos(tempi, Pos), indexXPos(GetPos(tempi, Pos)))+1);
-		//cout << " \b0";
-
 		bool Overwrite = false;
 		int IOverwrite = 0;
 		for (int h = 1; h < static_cast<int>(Open.size())-1; h++)
@@ -177,44 +340,19 @@ vector<vector<int>> CheckSurrounds(int Des, int IndexBest, vector<vector<int>>Op
 				Open.at(IOverwrite) = Open.back();
 				Open.pop_back();
 			}
-			i--;
-			max--;
 
 		}
 
-		bool isntClosed = true;
-		for (int f = 0; f < static_cast<int>(Closed.size()); f++)
-		{
-			if (Open.back().at(0) == Closed.at(f).at(0))
-			{
-				isntClosed = false;
-				if (Open.back().at(3) < Closed.at(f).at(2))
-				{
-					if (Closed.at(f).at(2) != 0)
-					{
-						Closed.at(f).at(1) = Open.back().at(4);
-						Closed.at(f).at(2) = Open.back().at(3);
-					}
-				}
-			}
-		}
-		if (isntClosed == false)
-		{
-			Open.pop_back();
-			i--;
-			max--;
-		}
+
 
 		bool OutOfRange = false;
 		if (Pos % 10 == 0)
 		{
-			if (tempi == 1 || tempi == 4 || tempi == 7)
+			if (i == 1 || i == 4 || i == 7)
 			{
-				if (isntClosed == true && Overwrite == false && OutOfRange == false)
+				if (Overwrite == false && OutOfRange == false)
 				{
 					Open.pop_back();
-					i--;
-					max--;
 					OutOfRange = true;
 				}
 
@@ -222,13 +360,11 @@ vector<vector<int>> CheckSurrounds(int Des, int IndexBest, vector<vector<int>>Op
 		}
 		if (Pos % 10 == 9)
 		{
-			if (tempi == 3 || tempi == 6 || tempi == 9)
+			if (i == 3 || i == 6 || i == 9)
 			{
-				if (isntClosed == true && Overwrite == false && OutOfRange == false)
+				if (Overwrite == false && OutOfRange == false)
 				{
 					Open.pop_back();
-					i--;
-					max--;
 					OutOfRange = true;
 				}
 			}
@@ -237,26 +373,48 @@ vector<vector<int>> CheckSurrounds(int Des, int IndexBest, vector<vector<int>>Op
 
 		if (Open.back().at(0) < 0)
 		{
-			if (isntClosed == true && Overwrite == false && OutOfRange == false)
+			if (Overwrite == false && OutOfRange == false)
 			{
 				Open.pop_back();
-				i--;
-				max--;
 				OutOfRange = true;
 			}
 		}
 		if (Open.back().at(0) > 99)
 		{
-			if (isntClosed == true && Overwrite == false && OutOfRange == false)
+			if (Overwrite == false && OutOfRange == false)
 			{
 				Open.pop_back();
-				i--;
-				max--;
+
 				OutOfRange = true;
 			}
 		}
 
-		tempi++;
+		bool isntClosed = true;
+		if (OutOfRange == false && Overwrite == false)
+		{
+			for (int f = 0; f < static_cast<int>(Closed.size()); f++)
+			{
+				if (Open.back().at(0) == Closed.at(f).at(0))
+				{
+					isntClosed = false;
+					//if (Open.back().at(3) < Closed.at(f).at(2)) //TODO remove?
+					//{
+					//	if (Closed.at(f).at(2) != 0)
+					//	{
+					//		Closed.at(f).at(1) = Open.back().at(4);
+					//		Closed.at(f).at(2) = Open.back().at(3);
+					//	}
+					//}
+				}
+			}
+			if (isntClosed == false)
+			{
+				Open.pop_back();
+
+			}
+		}
+
+
 
 	}
 	return(Open);
@@ -335,21 +493,6 @@ void noMoreSpace()
 
 }
 
-int find(int findee, vector<vector<int>> Closed)
-{
-	int ans = NULL;
-
-		for (int j = 0; j < static_cast<int>(Closed.size()); j++)
-		{
-			if (Closed.at(j).at(0) == findee)
-			{
-				ans = j;
-			}
-		}
-
-	return(ans);
-}
-
 void traceBack(int Des, vector<vector<int>>Closed)
 {
 	int ans = 0;
@@ -359,6 +502,10 @@ void traceBack(int Des, vector<vector<int>>Closed)
 
 	for (int i = 1; i < 10; i++)
 	{
+		if (i == 5)
+		{
+			i++;
+		}
 		for (int j = 0; j < static_cast<int>(Closed.size()) - 1; j++)
 		{
 			temp1 = GetPos(i, Des);
@@ -373,34 +520,30 @@ void traceBack(int Des, vector<vector<int>>Closed)
 			if (Closed.at(ans).at(1) != 0)//is this line redundant?
 			{
 				ans = Closed.at(ans).at(1);
+
 			}
 		}
 		test = false;
 
 	}
 
-	temp = Des;
+
+
+
+
+
 
 	while (true)
 	{
+		temp = GetPos(ans, temp);
+		gotoxy(indexXPos(temp) + 2, indexYPos(temp, indexXPos(temp)) + 1);
+ 		ans = Closed.at(find(temp, Closed)).at(1);
+		cout << "\bV";
 
-		for (int i = 1; i < 10; i++)
+		if (ans == 5)
 		{
-			if (i == ans)
-			{
-				i = abs(10 - i);
-				temp = GetPos(i, temp);
-				ans = Closed.at(find(temp, Closed)).at(1);
-
-				gotoxy(indexXPos(temp)+2, indexYPos(temp, indexXPos(temp) )+1);
-				cout << "\bV";
-				i = 11;
-
-			}
-
-		}
-		if (ans == 0)
-		{
+			gotoxy(15, 0);
+			system("pause");
 			system("CLS");
 			cout << "we made it woo" << endl;
 			cout << "although since its degug still its probably not workign :p" << endl;
@@ -421,7 +564,7 @@ void Acalculate(int Des, int Pos, vector<vector<int>> Closed)
 	vector<int>temp{ Pos, Hcalc(Des, Pos) , NULL ,NULL, NULL};
 	Open.push_back(temp);
 	//moves it to 0th position infront of walls 
-	vector<int>vTemp {Pos, NULL, NULL};
+	vector<int>vTemp {Pos, 5, Hcalc(Des, Pos)}; //TODO
 	Closed.push_back(vTemp);
 	vTemp = Closed.at(0);
 	Closed.at(0) = Closed.back();
