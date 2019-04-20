@@ -111,6 +111,11 @@ vector<vector<int>> CheckSurrounds(int Des, int IndexBest, vector<vector<int>>Op
 	temp.at(0) = Open.at(IndexBest).at(0);
 	temp.at(1) = abs(10 - Open.at(IndexBest).at(4)); 
 	temp.at(2) = Open.at(IndexBest).at(3);
+	if (temp.at(0) == 49)
+	{
+		cout << "HI";
+	}
+
 
 	int tempBestPos1 = 0;
 	int tempBestF1 = temp.at(2);
@@ -125,14 +130,14 @@ vector<vector<int>> CheckSurrounds(int Des, int IndexBest, vector<vector<int>>Op
 		{
 			SKIP = TRUE;
 		}
-		if (GetPos(j, temp.at(0)) % 10 == 0)
+		if (GetPos(j, temp.at(0)) % 10 == 9)
 		{
 			if (j == 1 || j == 4 || j == 7)
 			{
 				SKIP = TRUE;
 			}
 		}
-		if (GetPos(j, temp.at(0)) % 10 == 9)
+		if (GetPos(j, temp.at(0)) % 10 == 0)
 		{
 			if (j == 3 || j == 6 || j == 9)
 			{
@@ -152,20 +157,11 @@ vector<vector<int>> CheckSurrounds(int Des, int IndexBest, vector<vector<int>>Op
 		if (SKIP == FALSE)
 		{
 			tempPos1 = GetPos(j, temp.at(0));
-			tempBestPos1 = tempPos1;
-			//int tempno1 = Closed.at(find(tempPos1, Closed)).at(2);
-			//int tempno2 = Hcalc(Des, Closed.at(find(tempPos1, Closed)).at(0));
-			//if (j == 2 || j == 4 || j == 6 || j == 8)
-			//{
-			//	Jval1 = 10 + (tempno1 - tempno2);
-			//}
-			//else
-			//{
-			//	Jval1 = 14 + (tempno1 - tempno2);
-			//}
+			
+
 			for (int k = 0; k < static_cast<int>(Closed.size()); k++)
 			{
-				if (tempBestPos1 == Closed.at(k).at(0) && Closed.at(k).at(1) != 0)
+				if (tempPos1 == Closed.at(k).at(0) && Closed.at(k).at(1) != 0)
 				{
 					if (tempBestF1 < ((Hcalc(Des, Closed.at(k).at(0))) + Jval1))
 					{
@@ -216,6 +212,7 @@ vector<vector<int>> CheckSurrounds(int Des, int IndexBest, vector<vector<int>>Op
 		{
 			i++;
 		}
+
 		int tempno1 = Closed.at(find(Pos, Closed)).at(2);
 		int tempno2 = Hcalc(Des, Closed.at(find(Pos, Closed)).at(0));
 		int g = 0;
@@ -232,125 +229,20 @@ vector<vector<int>> CheckSurrounds(int Des, int IndexBest, vector<vector<int>>Op
 
 		vector<int>temp{ GetPos(i, Pos), Hcalc(Des, GetPos(i, Pos)) , g , Hcalc(Des, GetPos(i, Pos)) + g, i };
 
-	////	if ()  TODO keppeind better DIR
-	//	for (int i = 0; i < static_cast<int>(Closed.size()); i++)
-	//	{
-	//		if (temp.at(0) == Closed.at(i).at(0))
-	//		{
-	//			//if (temp.at(3) > Closed.at(i).at(2))
-	//			//{
-	//			int tempBestPos = 0;
-	//			int tempBestF = 0;
-	//			int tempPos = 0;
-	//			int tempJval = 0;
-	//			int Jval = 0;
-	//			bool SKIP = FALSE;
-	//			//temp.at(4) = Closed.at(i).at(1);
-	//			//set direction to the direction if it came from the previous position with the highest h value
-	//			for (int j = 1; j < 10; j++)
-	//			{
-	//				SKIP = FALSE;
-	//				if (j == 5)
-	//				{
-	//					SKIP = TRUE;
-	//				}
-	//				if (GetPos(j, temp.at(0)) % 10 == 0)
-	//				{
-	//					if (j == 1 || j == 4 || j == 7)
-	//					{
-	//						SKIP = TRUE;
-	//					}
-	//				}
-	//				if (GetPos(j, temp.at(0)) % 10 == 9)
-	//				{
-	//					if (j == 3 || j == 6 || j == 9)
-	//					{
-	//						SKIP = TRUE;
-	//					}
-	//				}
-	//				if (GetPos(j, temp.at(0)) < 0)
-	//				{
-	//					SKIP = TRUE;
-	//				}
-	//				if (GetPos(j, temp.at(0)) > 99)
-	//				{
-	//					SKIP = TRUE;
-	//				}
-
-
-
-	//				tempPos = GetPos(j, temp.at(0));
-	//				tempBestPos = tempPos;
-	//				if (j == 2 || j == 4 || j == 6 || j == 8)
-	//				{
-	//					Jval = 10;
-	//				}
-	//				else
-	//				{
-	//					Jval = 14;
-	//				}
-
-	//				//if surrounding spot is on the closed list
-	//				for (int k = 0; k < static_cast<int>(Closed.size()); k++)
-	//				{
-	//					if (tempBestPos == Closed.at(k).at(0) && Closed.at(k).at(1) != 0 && SKIP != TRUE)
-	//					{
-	//						if (tempBestF < (Hcalc(Des, Closed.at(k).at(0))) + Jval)
-	//						{
-	//							tempBestF = Hcalc(Des, Closed.at(k).at(0)) + Jval;
-	//							tempBestPos = tempPos;
-	//							tempJval = j;
-
-	//						}
-	//					}
-	//				}
-
-	//			}
-	//			temp.at(4) = tempJval;
-	//			temp.at(3) = tempBestF;
-	//			temp.at(1) = tempBestF - tempJval;
-	//				//temp.at(3) = Closed.at(i).at(2);
-	//			//}
-	//		}
-
-	//	}
-
-
-
+		if (temp.at(0) == 49 && Pos == 60)
+		{
+			cout << "hi";
+		}
 
 		Open.push_back(temp);
-		bool Overwrite = false;
-		int IOverwrite = 0;
-		for (int h = 1; h < static_cast<int>(Open.size())-1; h++)
-		{
-			if (Open.back().at(0) == Open.at(h).at(0))
-			{
-				Overwrite = true;
-				IOverwrite = h;
-			}
-		}
-		if (Overwrite == true)
-		{
-			if (Open.back().at(3) > Open.at(IOverwrite).at(3))
-			{
-				Open.pop_back();
-			}
-			else
-			{
-				Open.at(IOverwrite) = Open.back();
-				Open.pop_back();
-			}
-
-		}
-
 
 
 		bool OutOfRange = false;
-		if (Pos % 10 == 0)
+		if (GetPos(i, Pos) % 10 == 0)
 		{
-			if (i == 1 || i == 4 || i == 7)
+			if (i == 9 || i == 6 || i == 3)
 			{
-				if (Overwrite == false && OutOfRange == false)
+				if (OutOfRange == false)
 				{
 					Open.pop_back();
 					OutOfRange = true;
@@ -358,11 +250,11 @@ vector<vector<int>> CheckSurrounds(int Des, int IndexBest, vector<vector<int>>Op
 
 			}
 		}
-		if (Pos % 10 == 9)
+		if (GetPos(i, Pos) % 10 == 9)
 		{
-			if (i == 3 || i == 6 || i == 9)
+			if (i == 7 || i == 4 || i == 1)
 			{
-				if (Overwrite == false && OutOfRange == false)
+				if (OutOfRange == false)
 				{
 					Open.pop_back();
 					OutOfRange = true;
@@ -373,7 +265,7 @@ vector<vector<int>> CheckSurrounds(int Des, int IndexBest, vector<vector<int>>Op
 
 		if (Open.back().at(0) < 0)
 		{
-			if (Overwrite == false && OutOfRange == false)
+			if (OutOfRange == false)
 			{
 				Open.pop_back();
 				OutOfRange = true;
@@ -381,12 +273,44 @@ vector<vector<int>> CheckSurrounds(int Des, int IndexBest, vector<vector<int>>Op
 		}
 		if (Open.back().at(0) > 99)
 		{
-			if (Overwrite == false && OutOfRange == false)
+			if (OutOfRange == false)
 			{
 				Open.pop_back();
 
 				OutOfRange = true;
 			}
+		}
+
+
+
+
+
+		bool Overwrite = false;
+		int IOverwrite = 0;
+		if (OutOfRange == false)
+		{
+			for (int h = 1; h < static_cast<int>(Open.size()) - 1; h++)
+			{
+				if (Open.back().at(0) == Open.at(h).at(0))
+				{
+					Overwrite = true;
+					IOverwrite = h;
+				}
+			}
+			if (Overwrite == true)
+			{
+				if (Open.back().at(3) > Open.at(IOverwrite).at(3))
+				{
+					Open.pop_back();
+				}
+				else
+				{
+					Open.at(IOverwrite) = Open.back();
+					Open.pop_back();
+				}
+
+		}
+
 		}
 
 		bool isntClosed = true;
@@ -397,14 +321,14 @@ vector<vector<int>> CheckSurrounds(int Des, int IndexBest, vector<vector<int>>Op
 				if (Open.back().at(0) == Closed.at(f).at(0))
 				{
 					isntClosed = false;
-					//if (Open.back().at(3) < Closed.at(f).at(2)) //TODO remove?
-					//{
-					//	if (Closed.at(f).at(2) != 0)
-					//	{
-					//		Closed.at(f).at(1) = Open.back().at(4);
-					//		Closed.at(f).at(2) = Open.back().at(3);
-					//	}
-					//}
+					if (Open.back().at(3) < Closed.at(f).at(2)) //TODO remove?
+					{
+						if (Closed.at(f).at(2) != 0)
+						{
+							Closed.at(f).at(1) = Open.back().at(4);
+							Closed.at(f).at(2) = Open.back().at(3);
+						}
+					}
 				}
 			}
 			if (isntClosed == false)
@@ -506,9 +430,9 @@ void traceBack(int Des, vector<vector<int>>Closed)
 		{
 			i++;
 		}
+		temp1 = GetPos(i, Des);
 		for (int j = 0; j < static_cast<int>(Closed.size()) - 1; j++)
 		{
-			temp1 = GetPos(i, Des);
 			if (Closed.at(j).at(0) == temp1)
 			{
 				ans = j;
@@ -517,7 +441,7 @@ void traceBack(int Des, vector<vector<int>>Closed)
 		}
 		if (test == true)
 		{
-			if (Closed.at(ans).at(1) != 0)//is this line redundant?
+			if (Closed.at(ans).at(1) != 0)
 			{
 				ans = Closed.at(ans).at(1);
 
@@ -526,11 +450,6 @@ void traceBack(int Des, vector<vector<int>>Closed)
 		test = false;
 
 	}
-
-
-
-
-
 
 
 	while (true)
