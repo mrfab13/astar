@@ -224,15 +224,8 @@ vector<vector<int>> CheckSurrounds(int Des, int IndexBest, vector<vector<int>>Op
 		{
 			g = 14 + (tempno1 - tempno2);
 		}
-		
-
 
 		vector<int>temp{ GetPos(i, Pos), Hcalc(Des, GetPos(i, Pos)) , g , Hcalc(Des, GetPos(i, Pos)) + g, i };
-
-		if (temp.at(0) == 49 && Pos == 60)
-		{
-			cout << "hi";
-		}
 
 		Open.push_back(temp);
 
@@ -280,10 +273,6 @@ vector<vector<int>> CheckSurrounds(int Des, int IndexBest, vector<vector<int>>Op
 				OutOfRange = true;
 			}
 		}
-
-
-
-
 
 		bool Overwrite = false;
 		int IOverwrite = 0;
@@ -349,7 +338,7 @@ void printOpen(vector<vector<int>>Open)
 	for (int i = 1; i < static_cast<int>(Open.size()); i++)
 	{
 		gotoxy(indexXPos(Open.at(i).at(0)) +2 , indexYPos(Open.at(i).at(0), indexXPos(Open.at(i).at(0))) +1);
-		cout << "\b0";
+		cout << "\bO";
 
 	}
 }
@@ -362,11 +351,11 @@ void printClosed(vector<vector<int>>Closed)
 
 		if (Closed.at(i).at(1) == 0)
 		{
-			cout << "\bF";
+			cout << "\bW";
 		}
 		else
 		{
-			cout << "\bW";
+			cout << "\b0";
 		}
 	}
 	gotoxy(indexXPos(Closed.back().at(0)) + 2, indexYPos(Closed.back().at(0), indexXPos(Closed.back().at(0))) + 1);
@@ -385,35 +374,35 @@ void printStartFin(int Des, vector<vector<int>>Closed)
 
 void noMoreSpace()
 {
-	system("CLS");
-	gotoxy(0, 0);
+	gotoxy(30, 0);
 	cout << "no more possible moves" << endl;
+	gotoxy(30, 1);
 	system("pause");
 	system("CLS");
 
-	cout << "time and space have become meaningless" << endl;
-	system("pause");
-	system("CLS");
+	//cout << "time and space have become meaningless" << endl;
+	//system("pause");
+	//system("CLS");
 
-	cout << "infinite search contained in a finite space" << endl;
-	system("pause");
-	system("CLS");
+	//cout << "infinite search contained in a finite space" << endl;
+	//system("pause");
+	//system("CLS");
 
-	cout << "infinite time, results unchanged" << endl;
-	system("pause");
-	system("CLS");
+	//cout << "infinite time, results unchanged" << endl;
+	//system("pause");
+	//system("CLS");
 
-	cout << "Did I even Exist?" << endl;
-	system("pause");
-	system("CLS");
+	//cout << "Did I even Exist?" << endl;
+	//system("pause");
+	//system("CLS");
 
-	cout << "endl; my life" << endl;
-	system("pause");
-	system("CLS");
+	//cout << "endl; my life" << endl;
+	//system("pause");
+	//system("CLS");
 
-	cout << "please" << endl;
-	system("pause");
-	system("CLS");
+	//cout << "please" << endl;
+	//system("pause");
+	//system("CLS");
 
 }
 
@@ -461,11 +450,12 @@ void traceBack(int Des, vector<vector<int>>Closed)
 
 		if (ans == 5)
 		{
+			cout << "\bS";
 			gotoxy(15, 0);
-			system("pause");
-			system("CLS");
 			cout << "we made it woo" << endl;
+			gotoxy(15, 1);
 			cout << "although since its degug still its probably not workign :p" << endl;
+			gotoxy(15, 2);
 			system("pause");
 			break;
 		}
@@ -547,47 +537,47 @@ void Acalculate(int Des, int Pos, vector<vector<int>> Closed)
 
 }
 
-
+//pritns various things depending on what the user is currently placing 
 void typeprint(int type)
 {
-	if (type == 0)
+	if (type == 0) //fist itteration the destination is being placed
 	{
 		cout << "you are currently placing destination";
 	}
-	if (type == 1)
+	if (type == 1)//second itteration source is being placed
 	{
 		cout << "you are currently placing      source";
 	}
-	if (type == 2)
+	if (type == 2) // thried itteration walls are being placed
 	{
 		cout << "you are currently placing        wall";
 	}
 }
 
+//the placement function for the starting, finishing and all the wall positions
 int placement(int type, int Des, int Pos, int WallCount, vector<vector<int>> Closed)
 {
-
+	//initilising variables
 	int x = 0;
 	int y = 0;
 	int xMax = 1;
 	int yMax = 1;
-
 	int ch = 0;
 	int ans = 0;
 
 
-	while (ch != 13)
+	while (ch != 13) //while enter isnt pressed
 	{
 		gotoxy(0, 15);
-		cout << "WASD or wasd to move and enter to place" << endl;
-		typeprint(type);
+		cout << "WASD or wasd to move and enter to place" << endl; //instructions
+		typeprint(type); //tells user what they are currently placing
 		cout << endl;
-		cout << "x: " << x << endl << "y: " << y << endl;
+		cout << "x: " << x << endl << "y: " << y << endl; //prints the current co-ordinates of the mouse 
 		gotoxy(x + 1, y + 1);
 		ch = _getch();
 		if (ch == 119 || ch == 87) //w key pressed
 		{
-			if (yMax > 1)
+			if (yMax > 1) //checks it can move then does so and adjust values accordingly
 			{
 				y -= 1;
 				yMax -= 1;
@@ -596,7 +586,7 @@ int placement(int type, int Des, int Pos, int WallCount, vector<vector<int>> Clo
 		}
 		else if (ch == 97 || ch == 65) //a key pressed
 		{
-			if (xMax > 1)
+			if (xMax > 1) //checks it can move then does so and adjust values accordingly
 			{
 				x -= 1;
 				xMax -= 1;
@@ -604,7 +594,7 @@ int placement(int type, int Des, int Pos, int WallCount, vector<vector<int>> Clo
 		}
 		else if (ch == 115 || ch == 83) //s key pressed
 		{
-			if (yMax < 10)
+			if (yMax < 10) //checks it can move then does so and adjust values accordingly
 			{
 				y += 1;
 				yMax += 1;
@@ -612,7 +602,7 @@ int placement(int type, int Des, int Pos, int WallCount, vector<vector<int>> Clo
 		}
 		else if (ch == 100 || ch == 68) //d key pressed
 		{
-			if (xMax < 10)
+			if (xMax < 10) //checks it can move then does so and adjust values accordingly
 			{
 				x += 1;				
 				xMax += 1;
@@ -620,7 +610,7 @@ int placement(int type, int Des, int Pos, int WallCount, vector<vector<int>> Clo
 		}
 		else if (ch == 13) //enter key pressed
 		{
-			ans = (y * 10) + x;
+			ans = (y * 10) + x; //convers the xy position to a number between 0-100 that will represent its position on the grid
 			if (type == 2)
 			{
 				for (int i = 0; i < static_cast<int>(Closed.size()); i++)
@@ -658,68 +648,152 @@ int placement(int type, int Des, int Pos, int WallCount, vector<vector<int>> Clo
 			}
 		}
 	}
+	//if the last time the function is called
 	if (type == 2)
 	{
-		Acalculate(Des, Pos, Closed);
+		Acalculate(Des, Pos, Closed);	//move onto the next stage
 	}
 	return (ans);
 }
 
+//gets the a* search started calls placemnet functions and initilises values
 void AStarSetup()
 {
+	//initilising vectors and various positions
 	vector<vector<int>> closed;
-	int WallNo = 0;
+	int WallNo = 5;
 	int Destination = 0;
 	int StartingPos = 0;
 
+
+	//fun way to let the user choose the ammount of walls they want to place between the chosen values
 	cout << "how many walls you you like to place? (10 X 10 Grid)" << endl;
-	cin >> WallNo;
+	cout << "between 0 and 98" << endl;
+	char ch = 0;
+	//modular if i need to change the location
+	int Xprint = 15;
+	int Yprint = 10;
+	//instructions
+	gotoxy(Xprint - 1, Yprint - 1);
+	cout << "w = +1";
+	gotoxy(Xprint - 8, Yprint);
+	cout << "a = -10";
+	gotoxy(Xprint - 1, Yprint + 1);
+	cout << "s = -1";
+	gotoxy(Xprint + 5, Yprint);
+	cout << "d = +10";
+	//while enter isnt pressed
+	while (ch != 13)
+	{
+		//clear old value and rewrite with new 
+		gotoxy(Xprint + 4, Yprint);
+		cout << "\b\b\b\b    ";
+		gotoxy(Xprint, Yprint);
+		cout << "(" << WallNo << ")";
+		gotoxy(Xprint, Yprint);
+		Sleep(40); //small sleep so it isnt so sensitive
+		ch = _getch();
+
+		if (ch == 119 || ch == 87)//w key pressed +1
+		{
+			if (WallNo < 98) //smaller then 98 it can +1
+			{
+				WallNo++;
+			}
+		}
+		else if (ch == 115 || ch == 83) //s key pressed -1
+		{
+			if (WallNo > 0) //larger then 0 it can -1
+			{
+				WallNo--;
+			}
+		}
+		else if (ch == 97 || ch == 65) //s key pressed -10
+		{
+			if (WallNo > 0) //larger then 0 it can -10
+			{
+				if (WallNo < 10) //unless its less then 10 then it sets it to 0
+				{
+					WallNo = 0;
+				}
+				else
+				{
+					WallNo -= 10;
+				}
+			}
+		}
+		else if (ch == 100 || ch == 68) //s key pressed +10
+		{
+			if (WallNo < 98) //smaller then 98 it can +10
+			{
+				if (WallNo > 88)//unless its less greater 88 then it sets it to 98
+				{
+					WallNo = 98;
+				}
+				else
+				{
+					WallNo += 10;
+				}
+			}
+		}
+	}
+
+	//clears the screen and prints a grid to place on 
 	AGridPrint();
 
-
+	//first value determins how it acts amd what its placing within the same placment function
 	//0 == destination
 	//1 == source(starting)
 	//2 == obstacle
 	Destination = placement(0, NULL, NULL, NULL, closed);
 	StartingPos = placement(1, Destination, NULL, NULL, closed);
-	placement(2, Destination, StartingPos, WallNo, closed);
+	placement(2, Destination, StartingPos, WallNo, closed); //the next part of the function is called after the walls are placed
 
 }
 
+
+//prints the menu text to the console
+// stores their option as a char to later convert to ascii value
 int menu()
 {
-	char opt;
+	char opt; 
 	cout << "A * & H I L L C L I M B" << endl;
 	cout << "1) A*" << endl;
 	cout << "2) hillclimb" << endl;
 	cout << "3) exit" << endl;
-	cin >> opt;
+
+	std::cin >> opt;
 	return (opt);
 }
 
 
-
+//start of the program, creates a loop around the menu 
 int main()
 {
+	//initilises opt to a int 
 	int opt;
 	while (true)
 	{
 		system("CLS");
+		//menu returns a char of either 1, 2 or 3 and we conver it to ascii 
 		opt = menu();
-		if (opt == 49)
+		if (opt == 49) //option 1
 		{
+			//start doing a*
 			AStarSetup();
 		}
-		else if (opt == 50)
+		else if (opt == 50) // option 2
 		{
 			HillClimbSetup();
 		}
-		else if (opt == 51)
+		else if (opt == 51) // option 3
 		{
+			//quits
 			return(0);
 		}
 		else
 		{
+			//invalid
 			opt = NULL;
 		}
 
