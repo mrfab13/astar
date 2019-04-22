@@ -9,6 +9,9 @@
 
 using namespace std;
 
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - X and Y positions - 2x integers
 //moves the cursors porition to the passed x and y values
 void gotoxy(int column, int line)
 {
@@ -18,12 +21,21 @@ void gotoxy(int column, int line)
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - N/A
+//begins the setup of the hill climb function 
 void HillClimbSetup()
 {
 	cout << "WIP" << endl;
 	system("pause");
 }
 
+
+
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - N/A
 //prints an empty grid on a clear screen
 void AGridPrint()
 {
@@ -42,6 +54,9 @@ void AGridPrint()
 	cout << "____________" << endl;
 }
 
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - the destination and current position - 2x integers
 //calculates the H value which is the distance from the current postion to the destination 
 //by only moving in square directions also knowen as the Manhattan method
 int Hcalc(int des, int pos)
@@ -57,6 +72,9 @@ int Hcalc(int des, int pos)
 	return ((10 * (abs(desX - posX))) + (10 * (abs(desY - posY))));
 }
 
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - number to find on the closed list and the closed list - 1x integer, 1x 2D vector of integers 
 //find function goes through the closed list to find a position and returns the index of the position
 int find(int findee, vector<vector<int>> Closed)
 {
@@ -74,18 +92,27 @@ int find(int findee, vector<vector<int>> Closed)
 	return(ans);
 }
 
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - map co-ordinates - 1x integer
 //little function that takes in the map co-ordinates and returns the X position 
 int indexXPos(int indexX)
 {
 	return (indexX % 10);
 }
 
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - map co-ordinates and x position of map co-ordinates - 2x integers
 //little function that takes in the map co-ordinates and X position (convenianlty provided by the previous function) then returns the Y position 
 int indexYPos(int indexY, int indexX)
 {
 	return((indexY - indexX) / 10);
 }
 
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - direction and the map co-ordinates - 2x integers
 //getpos gets the position of the map co-ordinates after being moves in a passed through direction 
 int GetPos(int dir, int index)
 {
@@ -117,6 +144,9 @@ int GetPos(int dir, int index)
 	return(ans);
 }
 
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - destination, map co-ordinates, open list and closed list - 2x integers, 2x 2D vectors
 //the main calculation function, this takes in all the important variables and add things the open and closed list and 
 //makes sure every number is valid
 vector<vector<int>> CheckSurrounds(int Des, int IndexBest, vector<vector<int>>Open, vector<vector<int>>&Closed)
@@ -453,6 +483,9 @@ vector<vector<int>> CheckSurrounds(int Des, int IndexBest, vector<vector<int>>Op
 	return(Open);
 }
 
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - open list - 1x 2D vector
 //goes through the open list and prints all positions to the screen
 void printOpen(vector<vector<int>>Open)
 {
@@ -464,6 +497,9 @@ void printOpen(vector<vector<int>>Open)
 	}
 }
 
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - closed list - 1x 2D vector
 // goes through every value on the closed list and prints a corrosponding character onto the screen
 void printClosed(vector<vector<int>>Closed)
 {
@@ -487,6 +523,9 @@ void printClosed(vector<vector<int>>Closed)
 	//cout << "\bC";
 }
 
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - the destination and the closed list - 1x integer, 1x 2D vector
 //goes to the recorded values for the starting and finishing position and prints them on the screen 
 void printStartFin(int Des, vector<vector<int>>Closed)
 {
@@ -498,6 +537,9 @@ void printStartFin(int Des, vector<vector<int>>Closed)
 	cout << "\bD";
 }
 
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - N/A
 //the message to print when no more valid positions in the open list remain to try and place 
 void noMoreSpace()
 {
@@ -508,6 +550,9 @@ void noMoreSpace()
 	system("CLS");
 }
 
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - the destination and the closed list - 1x integer, 1x 2D vector
 //function that when called follows path of closed list from destination back to start highlighting the 
 //most efficent route without cornercutting
 void traceBack(int Des, vector<vector<int>>Closed)
@@ -643,6 +688,9 @@ void traceBack(int Des, vector<vector<int>>Closed)
 	}
 }
 
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - the destination, starting position and the closed list - 2x integers, 1x 2D vector 
 //a* setup is done next this function calls the functions to find the next best spot on the open list 
 //mvoe there and when its does trace back to the start, or if unable to says so and exits out
 void Acalculate(int Des, int Pos, vector<vector<int>> Closed)
@@ -719,6 +767,9 @@ void Acalculate(int Des, int Pos, vector<vector<int>> Closed)
 	}
 }
 
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - type to execute - 1x integer
 //pritns various things depending on what the user is currently placing 
 void typeprint(int type)
 {
@@ -736,6 +787,10 @@ void typeprint(int type)
 	}
 }
 
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - type to execute, the starting and finishing position how many walls are to be places and the closed list
+//4x integers, 1x 2D vector
 //the placement function for the starting, finishing and all the wall positions
 int placement(int type, int Des, int Pos, int WallCount, vector<vector<int>> Closed)
 {
@@ -843,6 +898,9 @@ int placement(int type, int Des, int Pos, int WallCount, vector<vector<int>> Clo
 	return (ans);
 }
 
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - N/A
 //gets the a* search started calls placemnet functions and initilises values
 void AStarSetup()
 {
@@ -939,9 +997,11 @@ void AStarSetup()
 
 }
 
-
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - N/A
 //prints the menu text to the console
-// stores their option as a char to later convert to ascii value
+//stores their option as a char to later convert to ascii value
 int menu()
 {
 	char opt; 
@@ -954,7 +1014,9 @@ int menu()
 	return (opt);
 }
 
-
+//27.3.19 - 22.4.19
+//Vaughan Webb
+//input - N/A
 //start of the program, creates a loop around the menu 
 int main()
 {
