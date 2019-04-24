@@ -7,6 +7,7 @@
 #include <array>
 #include <vector>
 
+
 using namespace std;
 
 //27.3.19 - 22.4.19
@@ -21,17 +22,207 @@ void gotoxy(int column, int line)
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-//27.3.19 - 22.4.19
+#pragma region "menus / main"
+
+//27.3.19 - 24.4.19
 //Vaughan Webb
-//input - N/A
-//begins the setup of the hill climb function 
-void HillClimbSetup()
+//input - pointer to the boards array and the number of queens - 2x integers
+//generates a random number for each of the queens position 
+void initialRandomGrid(int *board, int QueenNo)
 {
-	cout << "WIP" << endl;
+	//for each queen
+	for (int i = 0; i < QueenNo; i++) 
+	{
+		//random placement of the queens
+		board[i] = rand() % QueenNo;
+	}
+
+}
+
+//27.3.19 - 24.4.19
+//Vaughan Webb
+//input - pointer to the boards array and the number of queens - 2x integers
+//Checks to see if the queens have any collisions from their current board position
+int Collisions(int *board, int QueenNo) 
+{
+	//initlizing
+	int hit = 0;
+
+	//loop for first dimention
+	for (int x = 0; x < QueenNo - 1; x++) 
+	{
+		//loop for second dimention
+		for (int y = x + 1; y < QueenNo; y++) 
+		{
+			//checks vertical aliignment for collisions
+			if (board[x] == board[y]) 
+			{
+				hit++;
+			}
+			//checks "\" angled collisions
+			if (board[x] - board[y] == x - y)
+			{
+				hit++;
+			}
+			//checks for "/" angled collisions
+			if (board[x] - board[y] == y - x) 
+			{
+				hit++;
+			}
+		}
+	}
+	//return how many collisions occured
+	return (hit);
+}
+
+//27.3.19 - 24.4.19
+//Vaughan Webb
+//input - pointer to the boards array and the number of queens - 2x integers
+//prints the grid onto the console
+void drawGrid(int *board, int QueenNo)
+{
+	//prints how many collisions the current board has
+	cout << endl;
+	cout << "collisions: " << Collisions(board, QueenNo) <<endl;
+
+	//2 for loops to display on the x and y axis
+	for (int i = 0; i < QueenNo; i++)
+	{
+		for (int j = 0; j < QueenNo; j++)
+		{
+			//if a queen is at this location place a O
+			if (j == board[i])
+			{
+				cout << "O";
+			}
+			//if its not print a +
+			else
+			{
+				cout << "+";
+			}
+		}
+		cout << endl;
+	}
+}
+
+//27.3.19 - 24.4.19
+//Vaughan Webb
+//input - pointer to the boards array and the number of queens - 2x integers
+//generates the next boardstate for comparison
+int* generateGrid(int *board, int QueenNo)
+{
+	//initlising variables
+	vector<int> storage;
+	int collisionsOG = Collisions(board, QueenNo);
+	int collisionsTemp = 0;
+	int *board2 = new int[QueenNo];
+
+	//copys the current one onto the blank one for alterations
+	for (int i = 0; i < QueenNo; i++) 
+	{
+		board2[i] = board[i];
+	}
+
+	//loop for first axis
+	for (int i = 0; i < QueenNo; i++) 
+	{
+		//reset for new row
+		storage.clear();
+		storage.push_back(board2[i]);
+
+		//loop for second axis
+		for (int j = 0; j < QueenNo; j++) 
+		{
+			//change the current board
+			board2[i] = j;
+			//test for how many collisions occur 
+			collisionsTemp = Collisions(board2, QueenNo);
+
+			//if the generated one is the same as the old one 
+			if (collisionsTemp == collisionsOG)
+			{
+				//save it
+				storage.push_back(j);
+			}
+			//if the generated on is better then the old one
+			if (collisionsTemp < collisionsOG)
+			{
+				//clear it and save the new best one and replase the comparison value with the new one
+				storage.clear();
+				storage.push_back(j);
+				collisionsOG = collisionsTemp;
+			}
+		}
+		//adds the best queen for its row to the new board
+		board2[i] = storage.at(rand() % storage.size());
+	}
+	//return the new boardstate
+	return (board2);
+}
+
+//27.3.19 - 24.4.19
+//Vaughan Webb
+//input - pointer to the boards array and the number of queens - 2x integers
+//finds the next best boardstate
+bool findNextState(int *board, int QueenNo) 
+{
+	//initilising variables and a seconds board
+	int *tempBoard = generateGrid(board, QueenNo);
+	drawGrid(tempBoard, QueenNo);
+	bool test = false;
+
+	//if the secound board is better then the first one 
+	if (Collisions(tempBoard, QueenNo) < Collisions(board, QueenNo))
+	{
+		//chnage the value of test
+		test = true;
+
+		//replace all the values in the old one with the new one
+		for (int i = 0; i < QueenNo; i++)
+		{
+			board[i] = tempBoard[i];
+		}
+	}
+	//return either true or false depending if the boardstate was altered or not
+	return (test);
+}
+
+//27.3.19 - 24.4.19
+//Vaughan Webb
+//input - the number of queens being placed - 1x integer
+//Calls the functions to perform hillclimbing and shows the final result
+void HillClimbSetup(int QueenNo)
+{
+	//initlizing variables
+	int* board = new int[QueenNo];
+	initialRandomGrid(board, QueenNo);
+	bool test;
+	int count = 0;
+
+	//loop while problem is not sloved
+	while (Collisions(board, QueenNo) != 0)
+	{
+		//finds the next itteration of the board 
+		test = findNextState(board, QueenNo);
+		//if its unsolvable reset the board back to a random one
+		if (test == false) 
+		{
+			initialRandomGrid(board, QueenNo);
+		}
+		//adds to the ittaration counter
+		count++;
+
+	}
+	//displays a message with information on how many itterations it took and then prints the final boardstate
+	cout << endl << "After " << count << " itterations the final boardstate is:" << endl << endl;
+	drawGrid(board, QueenNo);
+	cout << endl;
 	system("pause");
 }
 
+#pragma endregion
 
+#pragma region "a*"
 
 //27.3.19 - 22.4.19
 //Vaughan Webb
@@ -997,20 +1188,57 @@ void AStarSetup()
 
 }
 
+#pragma endregion
+
+#pragma region "menus / main"
+
 //27.3.19 - 22.4.19
 //Vaughan Webb
 //input - N/A
-//prints the menu text to the console
+//prints the menu text to the console and takes their input 
 //stores their option as a char to later convert to ascii value
 int menu()
 {
 	char opt; 
-	cout << "A * & H I L L C L I M B" << endl;
+	cout << "A S T A R  &  H I L L  C L I M B" << endl;
 	cout << "1) A*" << endl;
 	cout << "2) hillclimb" << endl;
 	cout << "3) exit" << endl;
 
-	std::cin >> opt;
+	cin >> opt;
+	return (opt);
+}
+
+//27.3.19 - 24.4.19
+//Vaughan Webb
+//input - N/A
+//prints the menu text to the console and takes their input 
+//stores their option as a char to later convert to ascii value
+int menu2()
+{
+	char opt;
+	system("cls");
+	cout << "which method to solve the N queens problem" << endl;
+	cout << "1) Hillclimbing" << endl;
+	cout << "2) Simulated Annealing" << endl;
+
+	cin >> opt;
+	return (opt);
+}
+
+//27.3.19 - 24.4.19
+//Vaughan Webb
+//input - N/A
+//prints the menu text to the console and takes their input 
+//stores their option as a int to later make sure is larger then 3
+int menu3()
+{
+	int opt;
+	system("cls");
+	cout << "How many Queens would you like" << endl;
+	cout << "must be > 3 " << endl;
+
+	cin >> opt;
 	return (opt);
 }
 
@@ -1022,6 +1250,8 @@ int main()
 {
 	//initilises opt to a int 
 	int opt;
+	//seed for random number generator
+	srand(time(NULL));
 	while (true)
 	{
 		system("CLS");
@@ -1034,7 +1264,30 @@ int main()
 		}
 		else if (opt == 50) // option 2
 		{
-			HillClimbSetup();
+			//resets opt to be used again
+			opt = NULL;
+			//loops untill opt == either 49 or 50 (1 or 2)
+			while (opt != 49 && opt !=50)
+			{
+				opt = menu2();
+			}
+			//if the hillclim option is choesn
+			if (opt == 49)
+			{
+				//reset opt for resuing
+				opt = NULL;
+				//loops untill an option greater then 3 is chosen
+				while (opt < 4)
+				{
+					opt = menu3();
+				}
+				//beigns the setup of hillclimb using opt as number of queens
+				HillClimbSetup(opt);
+			}
+			else if (opt == 50)
+			{
+				//anneling
+			}
 		}
 		else if (opt == 51) // option 3
 		{
@@ -1051,17 +1304,5 @@ int main()
 	}
 
 	return(0);
-
-	//dont touch 
-	if (false)
-	{
-		while (false)
-		{
-			break;
-			break;
-		}
-	}
-	else if (true)
-	{
-	}
 }
+#pragma endregion
