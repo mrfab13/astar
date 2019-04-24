@@ -22,13 +22,13 @@ void gotoxy(int column, int line)
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-#pragma region "menus / main"
+#pragma region "hillclimb"
 
 //27.3.19 - 24.4.19
 //Vaughan Webb
 //input - pointer to the boards array and the number of queens - 2x integers
 //generates a random number for each of the queens position 
-void initialRandomGrid(int *board, int QueenNo)
+void RandomGrid(int *board, int QueenNo)
 {
 	//for each queen
 	for (int i = 0; i < QueenNo; i++) 
@@ -79,7 +79,7 @@ int Collisions(int *board, int QueenNo)
 //Vaughan Webb
 //input - pointer to the boards array and the number of queens - 2x integers
 //prints the grid onto the console
-void drawGrid(int *board, int QueenNo)
+void BoardPrint(int *board, int QueenNo)
 {
 	//prints how many collisions the current board has
 	cout << endl;
@@ -109,7 +109,7 @@ void drawGrid(int *board, int QueenNo)
 //Vaughan Webb
 //input - pointer to the boards array and the number of queens - 2x integers
 //generates the next boardstate for comparison
-int* generateGrid(int *board, int QueenNo)
+int* CreateNextBoard(int *board, int QueenNo)
 {
 	//initlising variables
 	vector<int> storage;
@@ -164,11 +164,11 @@ int* generateGrid(int *board, int QueenNo)
 //Vaughan Webb
 //input - pointer to the boards array and the number of queens - 2x integers
 //finds the next best boardstate
-bool findNextState(int *board, int QueenNo) 
+bool NextBoardState(int *board, int QueenNo) 
 {
 	//initilising variables and a seconds board
-	int *tempBoard = generateGrid(board, QueenNo);
-	drawGrid(tempBoard, QueenNo);
+	int *tempBoard = CreateNextBoard(board, QueenNo);
+	BoardPrint(tempBoard, QueenNo);
 	bool test = false;
 
 	//if the secound board is better then the first one 
@@ -195,7 +195,7 @@ void HillClimbSetup(int QueenNo)
 {
 	//initlizing variables
 	int* board = new int[QueenNo];
-	initialRandomGrid(board, QueenNo);
+	RandomGrid(board, QueenNo);
 	bool test;
 	int count = 0;
 
@@ -203,11 +203,11 @@ void HillClimbSetup(int QueenNo)
 	while (Collisions(board, QueenNo) != 0)
 	{
 		//finds the next itteration of the board 
-		test = findNextState(board, QueenNo);
+		test = NextBoardState(board, QueenNo);
 		//if its unsolvable reset the board back to a random one
 		if (test == false) 
 		{
-			initialRandomGrid(board, QueenNo);
+			RandomGrid(board, QueenNo);
 		}
 		//adds to the ittaration counter
 		count++;
@@ -215,7 +215,7 @@ void HillClimbSetup(int QueenNo)
 	}
 	//displays a message with information on how many itterations it took and then prints the final boardstate
 	cout << endl << "After " << count << " itterations the final boardstate is:" << endl << endl;
-	drawGrid(board, QueenNo);
+	BoardPrint(board, QueenNo);
 	cout << endl;
 	system("pause");
 }
