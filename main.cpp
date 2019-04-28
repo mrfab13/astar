@@ -6,7 +6,8 @@
 #include <conio.h>
 #include <array>
 #include <vector>
-
+#include <string>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -21,6 +22,137 @@ void gotoxy(int column, int line)
 	coord.Y = line;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
+
+//27.3.19 - 25.4.19
+//Vaughan Webb
+//input - a string and integer for what color - 1x string, 1x integers
+//chnages the color of a string to a spefified color and prints it to the screen
+void  ColoredText(string m_word, int m_color) 
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), m_color);
+	cout << m_word;
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+}
+
+
+
+#pragma region "Anneal"
+
+//global variables
+float StartingTemp = 10;
+float FinalTemp = 0.1;
+float CurrentTemp = StartingTemp;
+
+//declearing function as written in hillclimb but used in anneal also
+void RandomGrid(int *board, int QueenNo);
+void BoardPrint(int *board, int QueenNo);
+int Collisions(int *board, int QueenNo);
+
+int* generateGridAnneal(int *board, int QueenNo)
+{
+	vector<int> placement;
+	int place = Collisions(board, QueenNo);
+
+	int newPlace;
+	int* gridOut;
+	gridOut = new int[QueenNo];
+
+
+	for (int i = 0; i < QueenNo; i++)
+	{
+		gridOut[i] = board[i];
+	}
+
+	while (CurrentTemp > FinalTemp) 
+	{
+		for (int i = 0; i < QueenNo; i++)
+		{
+			placement.clear();
+			placement.push_back(gridOut[i]);
+			for (int j = 0; j < QueenNo; j++)
+			{
+				gridOut[i] = j;
+				newPlace = Collisions(gridOut, QueenNo);
+				int deltaC = newPlace - place;
+				float randno = (rand() / (float)RAND_MAX * 1);
+
+				if (deltaC < 0)
+				{
+					placement.clear();
+					placement.push_back(j);
+					place = newPlace;
+				}
+				else if (randno > 1-(exp(-(deltaC / CurrentTemp))))
+				{
+					placement.push_back(j);
+				}
+			}
+			gridOut[i] = placement[rand() % placement.size()];
+			if (Collisions(gridOut, QueenNo) == 0)
+			{
+				break;
+			}
+		}
+		CurrentTemp = CurrentTemp - 0.03;
+
+		system("cls");
+		BoardPrint(gridOut, QueenNo);
+		cout << CurrentTemp << endl;
+
+
+
+	}
+	return (gridOut);
+}
+
+
+bool NextBoardAnneal(int *board, int QueenNo)
+{
+	bool test = false;
+	int *Board2 = generateGridAnneal(board, QueenNo);
+
+	if (Collisions(Board2, QueenNo) < Collisions(board, QueenNo))
+	{
+		for (int p = 0; p < QueenNo; p++)
+		{
+			board[p] = Board2[p];
+		}
+		test = true;
+	}
+	return (test);
+}
+
+
+void AnnealSetup(int QueenNo)
+{
+	int count = 0;
+	int *board = new int[QueenNo];
+
+	while (Collisions(board, QueenNo) != 0)
+	{
+		count++;
+		if (NextBoardAnneal(board, QueenNo) == false)
+		{
+			cout << "objective not reached";
+			BoardPrint(board, QueenNo);
+			system("pause");
+			CurrentTemp == StartingTemp;
+			RandomGrid(board, QueenNo);
+
+		}
+
+	}
+	//displays a message with information on how many itterations it took and then prints the final boardstate
+	cout << endl << "After " << count << " itterations the final boardstate is:" << endl << endl;
+	BoardPrint(board, QueenNo);
+	cout << endl;
+	 StartingTemp = 1000;
+	 FinalTemp = 10;
+	 CurrentTemp = StartingTemp;
+	system("pause");
+}
+
+#pragma endregion 
 
 #pragma region "hillclimb"
 
@@ -98,7 +230,7 @@ void BoardPrint(int *board, int QueenNo)
 			//if its not print a +
 			else
 			{
-				cout << "+";
+				ColoredText("+", 13);
 			}
 		}
 		cout << endl;
@@ -1283,10 +1415,21 @@ int main()
 				}
 				//beigns the setup of hillclimb using opt as number of queens
 				HillClimbSetup(opt);
+				opt = NULL;
+
 			}
 			else if (opt == 50)
 			{
-				//anneling
+				opt = NULL;
+				//loops untill an option greater then 3 is chosen
+				while (opt < 4)
+				{
+					opt = menu3();
+				}
+				AnnealSetup(opt);
+				opt = NULL;
+
+
 			}
 		}
 		else if (opt == 51) // option 3
